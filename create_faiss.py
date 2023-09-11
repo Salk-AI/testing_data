@@ -72,12 +72,38 @@ def text_to_faiss(file_path):
     return docsearch
 
 
+def csv_to_faiss(file_path):
+    #Load Text file
+    csv_loader = CSVLoader(file_path,csv_args={"delimiter": ","})
+
+    # read data from the file and put them into a variable called raw_text
+    # raw_text = ''
+    # for i, page in enumerate(csv_reader.pages):
+    #     text = page.extract_text()
+    #     if text:
+    #         raw_text += text
+
+    # # Splitting up the text into smaller chunks for indexing
+    # csv_splitter = CharacterTextSplitter(        
+    #     separator = "\n",
+    #     chunk_size = 100,
+    #     chunk_overlap  = 20, #striding over the text
+    #     length_function = len,
+    # )
+    # texts = csv_splitter.split_text(raw_text)
+
+    data = csv_loader.load()
+
+    # Download embeddings from OpenAI
+    embeddings = OpenAIEmbeddings()
+
+    docsearch = FAISS.from_documents(data, embeddings)
+    return docsearch
+
 def main():
-    file_path = "fb.pdf"
-    doc_faiss = pdf_to_faiss(file_path)
-    doc_faiss.save_local("fb_1000")
-
-
+    file_path = "FK_ads.csv"
+    doc_faiss = csv_to_faiss(file_path)
+    doc_faiss.save_local("fk_1000")
 
 
 
